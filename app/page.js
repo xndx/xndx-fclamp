@@ -73,7 +73,9 @@ export default function HomePage() {
         fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
       }}
     >
-      <h1 style={{ fontSize: '2.5rem', marginBottom: '0.2rem' }}>FCLAMP</h1>
+      <h1 style={{ fontSize: '2.5rem', marginBottom: '0.2rem' }}>
+        Clamp generator
+      </h1>
       <p style={{ marginBottom: '2rem' }}>
         Generate a responsive <code>clamp()</code> size based on your min and
         max values.
