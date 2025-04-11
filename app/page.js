@@ -1,8 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 export default function HomePage() {
+  const previewRef = useRef(null)
+
   const [copied, setCopied] = useState(false)
 
   const [inputs, setInputs] = useState({
@@ -19,10 +21,13 @@ export default function HomePage() {
   // Load from localStorage on mount
   useEffect(() => {
     const savedInputs = localStorage.getItem('fclamp-inputs')
-    const savedText = localStorage.getItem('fclamp-text')
-
     if (savedInputs) setInputs(JSON.parse(savedInputs))
-    if (savedText) setPreviewText(savedText)
+
+    const savedText = localStorage.getItem('fclamp-text')
+    if (previewRef.current) {
+      previewRef.current.textContent =
+        savedText || 'Lorem ipsum dolor sit amet consectetur'
+    }
   }, [])
 
   // Save inputs to localStorage on change
@@ -146,9 +151,12 @@ export default function HomePage() {
 
       {clampValue && (
         <div
+          ref={previewRef}
           contentEditable
           suppressContentEditableWarning
-          onInput={(e) => setPreviewText(e.currentTarget.textContent)}
+          onInput={(e) =>
+            localStorage.setItem('fclamp-text', e.currentTarget.textContent)
+          }
           style={{
             marginTop: '2rem',
             fontSize: clampValue,
@@ -159,9 +167,7 @@ export default function HomePage() {
             padding: '0.1em 0.3em',
             borderRadius: '10px',
           }}
-        >
-          {previewText}
-        </div>
+        />
       )}
     </main>
   )
