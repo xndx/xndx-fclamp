@@ -67,7 +67,11 @@ export default function HomePage() {
 
   return (
     <main>
-      <h1 style={{ fontSize: '50px', marginBottom: '0' }}>Clamp generator</h1>
+      <h1
+        style={{ fontSize: '50px', lineHeight: '0.9', marginBottom: '0.3em' }}
+      >
+        Clamp generator
+      </h1>
       <h2 style={{ fontSize: '18px', marginBottom: '2em' }}>
         Generate a responsive <code>clamp()</code> size based on your min and
         max values.
