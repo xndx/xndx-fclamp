@@ -19,11 +19,11 @@ export default function HomePage() {
   )
 
   useEffect(() => {
-    const savedInputs = localStorage.getItem('fclamp-inputs')
+    const savedInputs = sessionStorage.getItem('fclamp-inputs')
     if (savedInputs) setInputs(JSON.parse(savedInputs))
 
     const savedText =
-      localStorage.getItem('fclamp-text') ||
+      sessionStorage.getItem('fclamp-text') ||
       'This text resizes dynamically with the viewport'
 
     setPreviewText(savedText)
@@ -34,11 +34,11 @@ export default function HomePage() {
   }, [])
 
   useEffect(() => {
-    localStorage.setItem('fclamp-inputs', JSON.stringify(inputs))
+    sessionStorage.setItem('fclamp-inputs', JSON.stringify(inputs))
   }, [inputs])
 
   useEffect(() => {
-    localStorage.setItem('fclamp-text', previewText)
+    sessionStorage.setItem('fclamp-text', previewText)
   }, [previewText])
 
   const handleChange = (e) => {
