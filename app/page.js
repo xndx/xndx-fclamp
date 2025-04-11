@@ -1,95 +1,144 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client'
 
-export default function Home() {
+import { useState } from 'react'
+
+export default function HomePage() {
+  const [copied, setCopied] = useState(false)
+
+  const [inputs, setInputs] = useState({
+    min: '16',
+    max: '90',
+    minSize: '320',
+    maxSize: '1400',
+  })
+
+  const [previewText, setPreviewText] = useState(
+    'This text resizes dynamically with the viewport'
+  )
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setInputs({ ...inputs, [name]: value })
+  }
+
+  const roundTo = (val) => Math.round(val * 1000) / 1000
+
+  const getClamp = () => {
+    const min = parseFloat(inputs.min)
+    const max = parseFloat(inputs.max)
+    const minSize = parseFloat(inputs.minSize)
+    const maxSize = parseFloat(inputs.maxSize)
+
+    if (isNaN(min) || isNaN(max) || isNaN(minSize) || isNaN(maxSize)) return ''
+
+    const slope = (max - min) / (maxSize - minSize)
+    const yIntercept = min - slope * minSize
+    const sign = yIntercept < 0 ? '-' : '+'
+    const intercept = roundTo(Math.abs(yIntercept))
+    const slopePercent = roundTo(slope * 100)
+
+    return `clamp(${min}px, ${slopePercent}vw ${sign} ${intercept}px, ${max}px)`
+  }
+
+  const clampValue = getClamp()
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>app/page.js</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <main style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
+      <h1 style={{ fontSize: '2.5rem', marginBottom: '0.2rem' }}>FCLAMP</h1>
+      <p style={{ marginBottom: '2rem' }}>
+        Generate a responsive <code>clamp()</code> size based on your min and
+        max values.
+      </p>
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          maxWidth: 400,
+          gap: '0.5rem',
+        }}
+      >
+        <label>
+          Min font-size (px)
+          <input
+            type="number"
+            name="min"
+            value={inputs.min}
+            onChange={handleChange}
+          />
+        </label>
+        <label>
+          Max font-size (px)
+          <input
+            type="number"
+            name="max"
+            value={inputs.max}
+            onChange={handleChange}
+          />
+        </label>
+        <label>
+          Min viewport width (px)
+          <input
+            type="number"
+            name="minSize"
+            value={inputs.minSize}
+            onChange={handleChange}
+          />
+        </label>
+        <label>
+          Max viewport width (px)
+          <input
+            type="number"
+            name="maxSize"
+            value={inputs.maxSize}
+            onChange={handleChange}
+          />
+        </label>
+      </div>
+
+      {clampValue && (
+        <div
+          onClick={() => {
+            navigator.clipboard.writeText(clampValue)
+            setCopied(true)
+            setTimeout(() => setCopied(false), 1000)
+          }}
+          style={{
+            marginTop: '1rem',
+            fontFamily: 'monospace',
+            backgroundColor: '#212121',
+            padding: '0.1em 0.3em',
+            borderRadius: '3px',
+            color: 'white',
+            cursor: 'pointer',
+            userSelect: 'all',
+            display: 'inline-block',
+            padding: '0.5em 1em',
+          }}
+          title="Click to copy"
+        >
+          {copied ? 'Copied!' : clampValue}
         </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+      )}
+
+      {clampValue && (
+        <div
+          contentEditable
+          suppressContentEditableWarning
+          onInput={(e) => setPreviewText(e.currentTarget.textContent)}
+          style={{
+            marginTop: '2rem',
+            fontSize: clampValue,
+            width: '100%',
+            cursor: 'text',
+            backgroundColor: '#212121',
+            padding: '0.1em 0.3em',
+            borderRadius: '10px',
+          }}
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+          {previewText}
+        </div>
+      )}
+    </main>
+  )
 }
