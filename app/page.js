@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 export default function HomePage() {
   const [copied, setCopied] = useState(false)
@@ -15,6 +15,25 @@ export default function HomePage() {
   const [previewText, setPreviewText] = useState(
     'This text resizes dynamically with the viewport'
   )
+
+  // Load from localStorage on mount
+  useEffect(() => {
+    const savedInputs = localStorage.getItem('fclamp-inputs')
+    const savedText = localStorage.getItem('fclamp-text')
+
+    if (savedInputs) setInputs(JSON.parse(savedInputs))
+    if (savedText) setPreviewText(savedText)
+  }, [])
+
+  // Save inputs to localStorage on change
+  useEffect(() => {
+    localStorage.setItem('fclamp-inputs', JSON.stringify(inputs))
+  }, [inputs])
+
+  // Save previewText on change
+  useEffect(() => {
+    localStorage.setItem('fclamp-text', previewText)
+  }, [previewText])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -43,7 +62,12 @@ export default function HomePage() {
   const clampValue = getClamp()
 
   return (
-    <main style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
+    <main
+      style={{
+        padding: '2rem',
+        fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
+      }}
+    >
       <h1 style={{ fontSize: '2.5rem', marginBottom: '0.2rem' }}>FCLAMP</h1>
       <p style={{ marginBottom: '2rem' }}>
         Generate a responsive <code>clamp()</code> size based on your min and
@@ -107,13 +131,12 @@ export default function HomePage() {
             marginTop: '1rem',
             fontFamily: 'monospace',
             backgroundColor: '#212121',
-            padding: '0.1em 0.3em',
+            padding: '0.5em 1em',
             borderRadius: '3px',
             color: 'white',
             cursor: 'pointer',
             userSelect: 'all',
             display: 'inline-block',
-            padding: '0.5em 1em',
           }}
           title="Click to copy"
         >
@@ -129,6 +152,7 @@ export default function HomePage() {
           style={{
             marginTop: '2rem',
             fontSize: clampValue,
+            lineHeight: '1em',
             width: '100%',
             cursor: 'text',
             backgroundColor: '#212121',
