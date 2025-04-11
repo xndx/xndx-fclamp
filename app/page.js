@@ -22,8 +22,15 @@ export default function HomePage() {
     const savedInputs = localStorage.getItem('fclamp-inputs')
     if (savedInputs) setInputs(JSON.parse(savedInputs))
 
-    const savedText = localStorage.getItem('fclamp-text')
-    if (savedText) setPreviewText(savedText)
+    const savedText =
+      localStorage.getItem('fclamp-text') ||
+      'This text resizes dynamically with the viewport'
+
+    setPreviewText(savedText)
+
+    if (previewRef.current) {
+      previewRef.current.textContent = savedText
+    }
   }, [])
 
   useEffect(() => {
@@ -151,9 +158,7 @@ export default function HomePage() {
             backgroundColor: '#212121',
             padding: 10,
           }}
-        >
-          {previewText}
-        </div>
+        />
       )}
     </main>
   )
