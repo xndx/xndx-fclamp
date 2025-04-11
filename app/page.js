@@ -18,24 +18,18 @@ export default function HomePage() {
     'This text resizes dynamically with the viewport'
   )
 
-  // Load from localStorage on mount
   useEffect(() => {
     const savedInputs = localStorage.getItem('fclamp-inputs')
     if (savedInputs) setInputs(JSON.parse(savedInputs))
 
     const savedText = localStorage.getItem('fclamp-text')
-    if (previewRef.current) {
-      previewRef.current.textContent =
-        savedText || 'Lorem ipsum dolor sit amet consectetur'
-    }
+    if (savedText) setPreviewText(savedText)
   }, [])
 
-  // Save inputs to localStorage on change
   useEffect(() => {
     localStorage.setItem('fclamp-inputs', JSON.stringify(inputs))
   }, [inputs])
 
-  // Save previewText on change
   useEffect(() => {
     localStorage.setItem('fclamp-text', previewText)
   }, [previewText])
@@ -53,8 +47,6 @@ export default function HomePage() {
     const minSize = parseFloat(inputs.minSize)
     const maxSize = parseFloat(inputs.maxSize)
 
-    if (isNaN(min) || isNaN(max) || isNaN(minSize) || isNaN(maxSize)) return ''
-
     const slope = (max - min) / (maxSize - minSize)
     const yIntercept = min - slope * minSize
     const sign = yIntercept < 0 ? '-' : '+'
@@ -67,16 +59,9 @@ export default function HomePage() {
   const clampValue = getClamp()
 
   return (
-    <main
-      style={{
-        padding: '2rem',
-        fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
-      }}
-    >
-      <h1 style={{ fontSize: '2.5rem', marginBottom: '0.2rem' }}>
-        Clamp generator
-      </h1>
-      <p style={{ marginBottom: '2rem' }}>
+    <main>
+      <h1 style={{ fontSize: '50px', marginBottom: '0' }}>Clamp generator</h1>
+      <p style={{ fontSize: '18px', marginBottom: '2em' }}>
         Generate a responsive <code>clamp()</code> size based on your min and
         max values.
       </p>
@@ -85,8 +70,7 @@ export default function HomePage() {
         style={{
           display: 'flex',
           flexDirection: 'column',
-          maxWidth: 400,
-          gap: '0.5rem',
+          gap: '1em',
         }}
       >
         <label>
@@ -136,14 +120,14 @@ export default function HomePage() {
           }}
           style={{
             marginTop: '1rem',
-            fontFamily: 'monospace',
-            backgroundColor: '#212121',
+            backgroundColor: '#0a2144',
             padding: '0.5em 1em',
-            borderRadius: '3px',
-            color: 'white',
+            borderRadius: '6px',
             cursor: 'pointer',
             userSelect: 'all',
             display: 'inline-block',
+            width: '100%',
+            maxWidth: '400px',
           }}
           title="Click to copy"
         >
@@ -154,22 +138,22 @@ export default function HomePage() {
       {clampValue && (
         <div
           ref={previewRef}
+          className="font-sans font-semibold"
           contentEditable
           suppressContentEditableWarning
-          onInput={(e) =>
-            localStorage.setItem('fclamp-text', e.currentTarget.textContent)
-          }
+          onInput={(e) => setPreviewText(e.currentTarget.textContent || '')}
           style={{
-            marginTop: '2rem',
+            marginTop: '100px',
             fontSize: clampValue,
-            lineHeight: '1em',
+            lineHeight: '1.1em',
             width: '100%',
             cursor: 'text',
             backgroundColor: '#212121',
-            padding: '0.1em 0.3em',
-            borderRadius: '10px',
+            padding: 10,
           }}
-        />
+        >
+          {previewText}
+        </div>
       )}
     </main>
   )
