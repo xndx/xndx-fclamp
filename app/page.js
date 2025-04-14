@@ -164,6 +164,9 @@ export default function HomePage() {
           }}
         />
       )}
+      <div className="links" style={{ marginTop: '2em' }}>
+        <a href="https://copychar.cc">COPYCHAR</a>
+      </div>
     </main>
   )
 }
