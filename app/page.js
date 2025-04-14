@@ -164,7 +164,10 @@ export default function HomePage() {
           }}
         />
       )}
-      <div className="links" style={{ marginTop: '2em' }}>
+      <div
+        className="links"
+        style={{ marginTop: '2em', display: 'flex', gap: '1em' }}
+      >
         <a href="https://copychar.cc">COPYCHAR</a>
       </div>
     </main>
